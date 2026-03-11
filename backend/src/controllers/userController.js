@@ -14,7 +14,6 @@ export class UserController {
       await userService.registerUser(name, email, password);
       return res.status(201).send("User created successfully!");
     } catch (error) {
-      console.error("ERRO NO BACKEND:", error);
       if (error.message === "Email already in use") {
         return res.status(409).send(error.message);
       }

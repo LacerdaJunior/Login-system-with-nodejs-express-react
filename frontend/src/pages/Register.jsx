@@ -35,7 +35,7 @@ export function Register() {
       console.error("Erro no cadastro:", error);
       setErro(
         error.response?.data?.error ||
-          "Erro ao criar a conta. Verifique os dados e tente novamente."
+          "Erro ao criar a conta. Email informado já está em uso."
       );
     } finally {
       setCarregando(false);
