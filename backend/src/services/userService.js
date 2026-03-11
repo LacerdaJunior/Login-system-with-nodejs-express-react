@@ -26,7 +26,7 @@ export class UserService {
   async loginUser(email, password) {
     const user = await database.findByEmail(email);
 
-    if (!email) {
+    if (!user) {
       throw new Error("Invalid email or password. ");
     }
 

@@ -14,8 +14,9 @@ export class UserController {
       await userService.registerUser(name, email, password);
       return res.status(201).send("User created successfully!");
     } catch (error) {
-      if (error === "Email already in use.") {
-        return res.status(409).send(error.mensage);
+      console.error("ERRO NO BACKEND:", error);
+      if (error.message === "Email already in use") {
+        return res.status(409).send(error.message);
       }
       return res.status(500).send("Intern Error.");
     }
@@ -32,7 +33,7 @@ export class UserController {
       const loginData = await userService.loginUser(email, password);
       return res.status(200).json(loginData);
     } catch (error) {
-      return res.status(401).send(error.mensage);
+      return res.status(401).send(error.message);
     }
   }
 }
