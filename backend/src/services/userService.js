@@ -44,4 +44,14 @@ export class UserService {
       user: { id: user.id, name: user.name, email: user.email },
     };
   }
+
+  async changeAvatar(email, mascotName) {
+    const user = await database.findByEmail(email);
+
+    if (!user) {
+      throw new Error("User not found ");
+    }
+
+    await database.updateAvatar(email, mascotName);
+  }
 }

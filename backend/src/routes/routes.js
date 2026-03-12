@@ -6,5 +6,5 @@ const userController = new UserController();
 
 routes.post("/register", userController.register);
 routes.post("/login", userController.login);
-
+routes.patch("/dashboard/avatar", userController.updateAvatar);
 export default routes;

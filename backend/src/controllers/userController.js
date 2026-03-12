@@ -35,4 +35,19 @@ export class UserController {
       return res.status(401).send(error.message);
     }
   }
+
+  async updateAvatar(req, res) {
+    const { email, mascotName } = req.body;
+
+    if (!email || !mascotName) {
+      return res.status(400).send("Email and mascot must be filled!");
+    }
+
+    try {
+      await userService.changeAvatar(email, mascotName);
+      return res.status(200).json("Avatar updated successfully!");
+    } catch (error) {
+      return res.status(400).send(error.message);
+    }
+  }
 }

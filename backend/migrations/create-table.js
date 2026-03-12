@@ -10,8 +10,8 @@ async function createTable() {
                 email       VARCHAR(150) UNIQUE NOT NULL,
                 password    TEXT NOT NULL
                 
-                ); `;
-
+                ); 
+`;
     console.log("Table created successfully ");
   } catch (error) {
     console.error("Error creating table", error);

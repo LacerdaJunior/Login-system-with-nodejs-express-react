@@ -14,4 +14,13 @@ export class DatabasePostg {
 
     await sql`insert into users  (id, name, email, password) VALUES (${userId}, ${name}, ${email}, ${password})`;
   }
+
+  async updateAvatar(email, avatar_url) {
+    try {
+      await sql`UPDATE users SET avatar_url = ${avatar_url} WHERE email= ${email} `;
+    } catch (error) {
+      console.error("Erro no update do banco:", error);
+      throw error;
+    }
+  }
 }
