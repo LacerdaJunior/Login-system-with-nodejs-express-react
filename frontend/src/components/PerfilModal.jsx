@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+
+import { api } from "../services/api";
+
 const AVATARES = [
   "/avatars/avatar1.png",
   "/avatars/avatar2.png",
@@ -63,40 +66,97 @@ export function ProfileModal({ onClose }) {
     navigate("/login");
   };
 
-  const handleSalvarNome = () => {
-    alert(`Backend: Simulando a troca de nome para "${newName}"`);
-    setUserName(newName);
-    setIsEditingName(false);
+  const handleSalvarNome = async () => {
+    try {
+      await api.patch("/dashboard/profile/name", {
+        email: userEmail,
+        newUsername: newName,
+      });
+
+      setUserName(newName);
+      setIsEditingName(false);
+
+      const userString = localStorage.getItem("@LoginOne:user");
+      if (userString) {
+        const userObj = JSON.parse(userString);
+        userObj.name = newName;
+        localStorage.setItem("@LoginOne:user", JSON.stringify(userObj));
+        window.dispatchEvent(new Event("usuarioAtualizado"));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao atualizar o nome.");
+    }
   };
 
-  const handleEscolherAvatar = (caminhoDoAvatar) => {
-    alert(`Backend: Simulando a troca de avatar para "${caminhoDoAvatar}"`);
-    setAvatarUrl(caminhoDoAvatar);
-    setIsEditingAvatar(false);
+  const handleEscolherAvatar = async (caminhoDoAvatar) => {
+    try {
+      await api.patch("/dashboard/profile", {
+        email: userEmail,
+        avatar_url: caminhoDoAvatar,
+      });
+
+      setAvatarUrl(caminhoDoAvatar);
+      setIsEditingAvatar(false);
+
+      const userString = localStorage.getItem("@LoginOne:user");
+      if (userString) {
+        const userObj = JSON.parse(userString);
+        userObj.avatar_url = caminhoDoAvatar;
+        localStorage.setItem("@LoginOne:user", JSON.stringify(userObj));
+        window.dispatchEvent(new Event("usuarioAtualizado"));
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar avatar no banco:", error);
+      alert("Não foi possível salvar seu avatar no banco de dados.");
+    }
   };
 
-  const handleMudarSenha = (e) => {
+  const handleMudarSenha = async (e) => {
     e.preventDefault();
     if (passwords.nova !== passwords.confirmacao) {
       return alert("As senhas novas não coincidem!");
     }
-    alert("Backend: Simulando envio de alteração de senha!");
-    setPasswords({ atual: "", nova: "", confirmacao: "" });
+
+    try {
+      await api.patch("/dashboard/profile/updatepass", {
+        email: userEmail,
+        oldPassword: passwords.atual,
+        newPassword: passwords.nova,
+      });
+
+      alert("Senha alterada com sucesso!");
+      setPasswords({ atual: "", nova: "", confirmacao: "" });
+      setShowAdvanced(false);
+    } catch (error) {
+      alert(error.response?.data?.error || "Erro ao alterar a senha.");
+    }
   };
 
-  const handleExcluirConta = (e) => {
+  const handleExcluirConta = async (e) => {
     e.preventDefault();
     if (!deletePassword) return alert("Digite sua senha para confirmar!");
     const confirmacao = window.confirm(
       "TEM CERTEZA? Essa ação não pode ser desfeita."
     );
-    if (confirmacao) alert("Backend: Simulando a exclusão da conta!");
+
+    if (confirmacao) {
+      try {
+        await api.delete("/dashboard/profile/deleteacc", {
+          data: { email: userEmail, password: deletePassword },
+        });
+        alert("Sua conta foi excluída com sucesso.");
+        handleLogout();
+      } catch (error) {
+        alert(error.response?.data?.error || "Erro ao excluir conta.");
+      }
+    }
   };
 
   return (
     <>
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"></div>
-      <main className="fixed inset-0 flex items-center justify-center px-4 py-6 z-[60]">
+      <main className="fixed inset-0 flex items-center justify-center px-4 py-6 z-[60] ">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -291,7 +351,7 @@ export function ProfileModal({ onClose }) {
                       <h4 className="font-bold text-red-600 flex items-center gap-2 mb-2">
                         <Trash2 size={16} /> Excluir conta
                       </h4>
-                      <p className="text-sm text-red-600/80 mb-2">
+                      <p className="text-sm text-red-600/80 mb-2 font-space">
                         Para excluir sua conta permanentemente, digite sua senha
                         atual para confirmar.
                       </p>
@@ -318,7 +378,7 @@ export function ProfileModal({ onClose }) {
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-6 py-4 bg-zinc-50 hover:bg-zinc-100 text-zinc-600 font-bold rounded-xl transition-all w-full justify-center mt-auto border border-zinc-200"
+            className="flex items-center gap-2 px-6 py-4 bg-zinc-50 hover:bg-zinc-100 text-red-500 font-bold rounded-xl transition-all w-full justify-center mt-auto border border-zinc-200"
           >
             <LogOut size={20} /> Sair da conta
           </button>

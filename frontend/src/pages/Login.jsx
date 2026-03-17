@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Flame } from "lucide-react";
 import { Footer } from "../components/footer";
-import { AnchorHome } from "../components/AnchorHome";
+import { BackHome } from "../components/BackHome";
 import { api } from "../services/api";
 import { useEffect } from "react";
 
@@ -56,7 +56,7 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-white font-space flex flex-col">
-      <AnchorHome />
+      <BackHome />
 
       <main className="flex-1 flex items-center justify-center px-6">
         <motion.div

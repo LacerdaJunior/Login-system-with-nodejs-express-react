@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Mail, Lock, CheckCircle, Flame } from "lucide-react";
 import { Footer } from "../components/footer";
 import { Header } from "../components/Header";
-import { AnchorHome } from "../components/AnchorHome";
+import { BackHome } from "../components/BackHome";
 import { api } from "../services/api";
 import { useEffect } from "react";
 
@@ -52,7 +52,7 @@ export function Register() {
 
   return (
     <div className="min-h-screen bg-white font-space flex flex-col">
-      <AnchorHome />
+      <BackHome />
 
       <main className="flex-1 flex items-center justify-center px-6">
         <motion.div
