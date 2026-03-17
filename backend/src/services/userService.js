@@ -50,14 +50,14 @@ export class UserService {
     };
   }
 
-  async changeAvatar(email, mascotName) {
+  async changeAvatar(email, avatar_url) {
     const user = await database.findByEmail(email);
 
     if (!user) {
       throw new Error("User not found ");
     }
 
-    await database.updateAvatar(email, mascotName);
+    await database.updateAvatar(email, avatar_url);
   }
 
   async changePassword(email, oldPassword, newPassword) {
@@ -74,7 +74,7 @@ export class UserService {
     }
 
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
-    await database.updatePassword(user, newHashedPassword);
+    await database.updatePassword(email, newHashedPassword);
   }
 
   async deleteAccount(email, password) {
@@ -91,5 +91,15 @@ export class UserService {
     }
 
     await database.deleteUser(email);
+  }
+
+  async changeUsername(email, newUsername) {
+    const user = await database.findByEmail(email);
+
+    if (!user) {
+      throw new Error("Invalid user");
+    }
+
+    await database.updateUsername(email, newUsername);
   }
 }

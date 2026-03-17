@@ -37,17 +37,17 @@ export class UserController {
   }
 
   async updateAvatar(req, res) {
-    const { email, mascotName } = req.body;
+    const { email, avatar_url } = req.body;
 
-    if (!email || !mascotName) {
+    if (!email || !avatar_url) {
       return res.status(400).send("Email and mascot must be filled!");
     }
 
     try {
-      await userService.changeAvatar(email, mascotName);
+      await userService.changeAvatar(email, avatar_url);
       return res.status(200).json("Avatar updated successfully!");
     } catch (error) {
-      return res.status(400).send(error.message);
+      return res.status(400).json({ error: error.message });
     }
   }
 
@@ -62,7 +62,7 @@ export class UserController {
       await userService.changePassword(email, oldPassword, newPassword);
       return res.status(200).json("Password updated successfully!");
     } catch (error) {
-      return res.status(400).send(error.message);
+      return res.status(400).json({ error: error.message });
     }
   }
 
@@ -77,7 +77,22 @@ export class UserController {
       await userService.deleteAccount(email, password);
       return res.status(200).json("Account has been deleted");
     } catch (error) {
-      return res.status(400).send(error.message);
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async updateUsername(req, res) {
+    const { email, newUsername } = req.body;
+
+    if (!email || !newUsername) {
+      return res.status(400).send("All data must be filled!");
+    }
+
+    try {
+      await userService.changeUsername(email, newUsername);
+      return res.status(200).json("Username updated successfully!");
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
   }
 }

@@ -50,4 +50,34 @@ export class DatabasePostg {
       throw new Error("Erro interno ao confirmar exclusão de conta");
     }
   }
+
+  async updateUsername(email, newUsername) {
+    try {
+      await sql`UPDATE users 
+      SET name = ${newUsername} 
+      WHERE email = ${email}`;
+
+      return true;
+    } catch (error) {
+      console.error("Erro ao atualizar nome no banco", error);
+      throw new Error("Erro interno ao atualizar o nome de usuário.");
+    }
+  }
+
+  // ==========================================
+  // MÉTODOS DE TAREFAS (TASKS)
+  // ==========================================
+
+  async createTask(title, user_email) {
+    const taskId = randomUUID();
+
+    try {
+      await sql`
+      INSERT INTO tasks (id, title, user_email)
+       VALUES (${taskId},${title},${user_email})`;
+    } catch (error) {
+      console.log("Erro ao criar tarefa no banco", error);
+      throw new Error("Erro interno ao criar tarefa");
+    }
+  }
 }
