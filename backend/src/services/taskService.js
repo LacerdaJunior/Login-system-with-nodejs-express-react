@@ -47,4 +47,8 @@ export class TaskService {
     }));
     return taskList;
   }
+
+  async deleteTask(taskId, email) {
+    await database.deleteTask(taskId, email);
+  }
 }

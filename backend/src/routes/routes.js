@@ -16,4 +16,6 @@ routes.delete("/dashboard/profile/deleteacc", userController.deleteUser);
 routes.patch("/dashboard/profile/name", userController.updateUsername);
 routes.post("/dashboard/tasks", taskController.create);
 routes.post("/dashboard/categories", categoryController.create);
+routes.get("/dashboard/tasks", taskController.index);
+routes.delete("/dashboard/tasks/:id", taskController.delete);
 export default routes;

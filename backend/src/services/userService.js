@@ -102,4 +102,5 @@ export class UserService {
 
     await database.updateUsername(email, newUsername);
   }
+  
 }

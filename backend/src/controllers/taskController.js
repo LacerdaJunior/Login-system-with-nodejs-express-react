@@ -26,4 +26,36 @@ export class TaskController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  async index(req, res) {
+    const email = req.headers["user-email"];
+
+    if (!email) {
+      return res.status(400).json({ error: "User not found to list tasks." });
+    }
+    
+    try {
+      const tasks = await taskService.getTasks(email);
+      return res.status(200).json(tasks);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async delete(req, res) {
+    const email = req.headers["user-email"];
+
+    const taskId = req.params.id;
+
+    if (!email || !taskId) {
+      return res.status(400).json({ error: "Missing user email or task ID." });
+    }
+
+    try {
+      await taskService.deleteTask(taskId, email);
+      return res.status(200).json({ message: "Task has been deleted." });
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
 }

@@ -90,18 +90,6 @@ export class DatabasePostg {
     }
   }
 
-  async createCategory(name, color, user_email) {
-    const categorieId = randomUUID();
-
-    try {
-      await sql`INSERT INTO categories (id, name, color, user_email) VALUES (${categorieId}, ${name}, ${color}, ${user_email} )`;
-      return true;
-    } catch (error) {
-      console.log("Erro ao definir categoria", error);
-      throw new Error("Erro interno ao definir categoria no banco");
-    }
-  }
-
   async getTasksByUser(email) {
     try {
       const tasks = await sql`
@@ -125,6 +113,35 @@ export class DatabasePostg {
     } catch (error) {
       console.error("Erro ao buscar tarefas no banco:", error);
       throw new Error("Erro interno ao buscar as tarefas.");
+    }
+  }
+
+  async deleteTaskByUser(taskId, email) {
+    try {
+      await sql`
+      DELETE FROM tasks 
+      WHERE id = ${taskId} AND user_email = ${email}
+    `;
+      return true;
+    } catch (error) {
+      console.log("Erro ao excluir tarefa no banco:", error);
+      throw new Error("Erro interno ao excluir a tarefa.");
+    }
+  }
+
+  // ==========================================
+  // MÉTODOS DE CATEGORIAS (CATEGORY/IES)
+  // ==========================================
+
+  async createCategory(name, color, user_email) {
+    const categorieId = randomUUID();
+
+    try {
+      await sql`INSERT INTO categories (id, name, color, user_email) VALUES (${categorieId}, ${name}, ${color}, ${user_email} )`;
+      return true;
+    } catch (error) {
+      console.log("Erro ao definir categoria", error);
+      throw new Error("Erro interno ao definir categoria no banco");
     }
   }
 }
