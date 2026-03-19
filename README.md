@@ -1,11 +1,15 @@
 ````markdown
-# 🚀 [TaskHub]
+# 🚀 [TaskSystem]
 
-Uma plataforma web colaborativa para gerenciamento de tarefas e eventos entre amigos, com sistema de perfis customizáveis.
+Uma plataforma web colaborativa para gerenciamento de tarefas
+ e eventos entre amigos, com sistema de perfis customizáveis.
 
 ## 💡 Sobre o Projeto
 
-Iniciado como um sistema robusto de autenticação, este projeto está evoluindo para um SaaS (Software as a Service) colaborativo. O objetivo é permitir que usuários criem contas de forma segura, personalizem seus avatares e gerenciem projetos em equipe com comunicação em tempo real.
+Iniciado como um sistema robusto de autenticação,
+este projeto está evoluindo para um SaaS (Software as a Service) colaborativo.
+O objetivo é permitir que usuários criem contas de forma segura,
+personalizem seus avatares e gerenciem projetos em equipe com comunicação em tempo real.
 
 ## 🛠️ Tecnologias Utilizadas
 
