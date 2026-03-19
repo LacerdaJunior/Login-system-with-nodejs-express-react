@@ -48,6 +48,10 @@ export class TaskService {
     return taskList;
   }
 
+  async updateTask(taskId, email, data) {
+    await database.updateTask(taskId, email, data);
+  }
+
   async deleteTask(taskId, email) {
     await database.deleteTask(taskId, email);
   }

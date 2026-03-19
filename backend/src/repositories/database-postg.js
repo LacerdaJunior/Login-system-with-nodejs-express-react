@@ -129,6 +129,20 @@ export class DatabasePostg {
     }
   }
 
+  async updateTask(id, email, updateData) {
+    try {
+      await sql`
+        UPDATE tasks 
+        SET ${sql(updateData)} 
+        WHERE id = ${id} AND user_email = ${email}
+      `;
+      return true;
+    } catch (error) {
+      console.log("Erro ao atualizar tarefa no banco:", error);
+      throw new Error("Erro interno ao atualizar a tarefa.");
+    }
+  }
+
   // ==========================================
   // MÉTODOS DE CATEGORIAS (CATEGORY/IES)
   // ==========================================

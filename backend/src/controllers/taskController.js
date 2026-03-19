@@ -33,10 +33,26 @@ export class TaskController {
     if (!email) {
       return res.status(400).json({ error: "User not found to list tasks." });
     }
-    
+
     try {
       const tasks = await taskService.getTasks(email);
       return res.status(200).json(tasks);
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  async update(req, res) {
+    const email = req.headers["user-email"];
+    const taskId = req.params.id;
+    const data = req.body;
+    if (!email || !taskId) {
+      return res.status(400).json({ error: "Missing user email or taskId" });
+    }
+
+    try {
+      await taskService.updateTask(taskId, email, data);
+      return res.status(200).json({ message: "Task updated successfully!" });
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
