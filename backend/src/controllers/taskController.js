@@ -4,14 +4,11 @@ const taskService = new TaskService();
 
 export class TaskController {
   async create(req, res) {
-    const email = req.headers["user-email"];
-
+    const userId = req.userId;
     const { title, description, status, due_date, category_id } = req.body;
-
-    if (!email || !title) {
-      return res.status(400).json({ error: "Email and title are required!" });
+    if (!title) {
+      return res.status(400).json({ error: "Title is required!" });
     }
-
     try {
       await taskService.createNewTask(
         title,
@@ -19,9 +16,8 @@ export class TaskController {
         status,
         due_date || null,
         category_id || null,
-        email
+        userId
       );
-
       return res.status(201).json({ message: "Task created successfully!" });
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -29,14 +25,9 @@ export class TaskController {
   }
 
   async index(req, res) {
-    const email = req.headers["user-email"];
-
-    if (!email) {
-      return res.status(400).json({ error: "User not found to list tasks." });
-    }
-
+    const userId = req.userId;
     try {
-      const tasks = await taskService.getTasks(email);
+      const tasks = await taskService.getTasks(userId);
       return res.status(200).json(tasks);
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -44,15 +35,14 @@ export class TaskController {
   }
 
   async update(req, res) {
-    const email = req.headers["user-email"];
+    const userId = req.userId;
     const taskId = req.params.id;
     const data = req.body;
-    if (!email || !taskId) {
-      return res.status(400).json({ error: "Missing user email or taskId" });
+    if (!taskId) {
+      return res.status(400).json({ error: "Missing taskId" });
     }
-
     try {
-      await taskService.updateTask(taskId, email, data);
+      await taskService.updateTask(taskId, userId, data);
       return res.status(200).json({ message: "Task updated successfully!" });
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -60,16 +50,13 @@ export class TaskController {
   }
 
   async delete(req, res) {
-    const email = req.headers["user-email"];
-
+    const userId = req.userId;
     const taskId = req.params.id;
-
-    if (!email || !taskId) {
-      return res.status(400).json({ error: "Missing user email or task ID." });
+    if (!taskId) {
+      return res.status(400).json({ error: "Missing task ID." });
     }
-
     try {
-      await taskService.deleteTask(taskId, email);
+      await taskService.deleteTask(taskId, userId);
       return res.status(200).json({ message: "Task has been deleted." });
     } catch (error) {
       return res.status(400).json({ error: error.message });

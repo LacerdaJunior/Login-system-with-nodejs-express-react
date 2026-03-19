@@ -5,11 +5,9 @@ const userService = new UserService();
 export class UserController {
   async register(req, res) {
     const { name, email, password } = req.body;
-
     if (!name || !email || !password) {
       return res.status(400).send("Name, email and password must be filled!");
     }
-
     try {
       await userService.registerUser(name, email, password);
       return res.status(201).send("User created successfully!");
@@ -23,11 +21,9 @@ export class UserController {
 
   async login(req, res) {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).send("Email and password must be filled!");
     }
-
     try {
       const loginData = await userService.loginUser(email, password);
       return res.status(200).json(loginData);
@@ -37,14 +33,13 @@ export class UserController {
   }
 
   async updateAvatar(req, res) {
-    const { email, avatar_url } = req.body;
-
-    if (!email || !avatar_url) {
-      return res.status(400).send("Email and mascot must be filled!");
+    const userId = req.userId;
+    const { avatar_url } = req.body;
+    if (!avatar_url) {
+      return res.status(400).send("Avatar must be filled!");
     }
-
     try {
-      await userService.changeAvatar(email, avatar_url);
+      await userService.changeAvatar(userId, avatar_url);
       return res.status(200).json("Avatar updated successfully!");
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -52,14 +47,13 @@ export class UserController {
   }
 
   async updatePassword(req, res) {
-    const { email, oldPassword, newPassword } = req.body;
-
-    if (!email || !oldPassword || !newPassword) {
+    const userId = req.userId;
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
       return res.status(400).send("All data must be filled!");
     }
-
     try {
-      await userService.changePassword(email, oldPassword, newPassword);
+      await userService.changePassword(userId, oldPassword, newPassword);
       return res.status(200).json("Password updated successfully!");
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -67,14 +61,13 @@ export class UserController {
   }
 
   async deleteUser(req, res) {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).send("All data must be filled!");
+    const userId = req.userId;
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).send("Password must be filled!");
     }
-
     try {
-      await userService.deleteAccount(email, password);
+      await userService.deleteAccount(userId, password);
       return res.status(200).json("Account has been deleted");
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -82,14 +75,13 @@ export class UserController {
   }
 
   async updateUsername(req, res) {
-    const { email, newUsername } = req.body;
-
-    if (!email || !newUsername) {
-      return res.status(400).send("All data must be filled!");
+    const userId = req.userId;
+    const { newUsername } = req.body;
+    if (!newUsername) {
+      return res.status(400).send("Username must be filled!");
     }
-
     try {
-      await userService.changeUsername(email, newUsername);
+      await userService.changeUsername(userId, newUsername);
       return res.status(200).json("Username updated successfully!");
     } catch (error) {
       return res.status(400).json({ error: error.message });

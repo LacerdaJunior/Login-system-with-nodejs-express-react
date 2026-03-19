@@ -2,6 +2,7 @@ import express from "express";
 import { UserController } from "../controllers/userController.js";
 import { TaskController } from "../controllers/taskController.js";
 import { CategoryController } from "../controllers/categoryController.js";
+import { ensureAuthenticated } from "../middlewares/authMiddleware.js";
 
 const routes = express.Router();
 const userController = new UserController();
@@ -11,28 +12,18 @@ const categoryController = new CategoryController();
 routes.post("/register", userController.register);
 routes.post("/login", userController.login);
 
-routes.patch("/dashboard/profile", userController.updateAvatar);
-routes.patch("/dashboard/profile/updatepass", userController.updatePassword);
-routes.delete("/dashboard/profile/deleteacc", userController.deleteUser);
-routes.patch("/dashboard/profile/name", userController.updateUsername);
+routes.patch("/dashboard/profile", ensureAuthenticated, userController.updateAvatar);
+routes.patch("/dashboard/profile/updatepass", ensureAuthenticated, userController.updatePassword);
+routes.delete("/dashboard/profile/deleteacc", ensureAuthenticated, userController.deleteUser);
+routes.patch("/dashboard/profile/name", ensureAuthenticated, userController.updateUsername);
 
-//============
-// CRUD CATEGORY
-//=============
+routes.get("/dashboard/categories", ensureAuthenticated, categoryController.index);
+routes.post("/dashboard/categories", ensureAuthenticated, categoryController.create);
+routes.delete("/dashboard/categories/:id", ensureAuthenticated, categoryController.delete);
 
-routes.get("/dashboard/categories", categoryController.index);
-routes.post("/dashboard/categories", categoryController.create);
-routes.delete("/dashboard/categories/:id", categoryController.delete);
+routes.get("/dashboard/tasks", ensureAuthenticated, taskController.index);
+routes.post("/dashboard/tasks", ensureAuthenticated, taskController.create);
+routes.patch("/dashboard/tasks/:id", ensureAuthenticated, taskController.update);
+routes.delete("/dashboard/tasks/:id", ensureAuthenticated, taskController.delete);
 
-//================
-// CRUD TASKS
-//==============
-
-routes.get("/dashboard/tasks", taskController.index);
-
-routes.post("/dashboard/tasks", taskController.create);
-
-routes.patch("/dashboard/tasks/:id", taskController.update);
-
-routes.delete("/dashboard/tasks/:id", taskController.delete);
 export default routes;

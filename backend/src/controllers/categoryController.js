@@ -4,15 +4,13 @@ const categoryService = new CategoryService();
 
 export class CategoryController {
   async create(req, res) {
-    const email = req.headers["user-email"];
+    const userId = req.userId;
     const { name, color } = req.body;
-
-    if (!email || !name) {
-      return res.status(400).json({ error: "Email and name are required!" });
+    if (!name || !color) {
+      return res.status(400).json({ error: "Name and color are required!" });
     }
-
     try {
-      await categoryService.createNewCategory(name, color, email);
+      await categoryService.createNewCategory(name, color, userId);
       return res
         .status(201)
         .json({ message: "Category created successfully!" });
@@ -22,16 +20,9 @@ export class CategoryController {
   }
 
   async index(req, res) {
-    const email = req.headers["user-email"];
-
-    if (!email) {
-      return res
-        .status(400)
-        .json({ error: "User email is required to list categories." });
-    }
-
+    const userId = req.userId;
     try {
-      const categories = await categoryService.getCategories(email);
+      const categories = await categoryService.getCategories(userId);
       return res.status(200).json(categories);
     } catch (error) {
       return res.status(400).json({ error: error.message });
@@ -39,17 +30,13 @@ export class CategoryController {
   }
 
   async delete(req, res) {
-    const email = req.headers["user-email"];
+    const userId = req.userId;
     const categoryId = req.params.id;
-
-    if (!email || !categoryId) {
-      return res
-        .status(400)
-        .json({ error: "Missing user email or category ID." });
+    if (!categoryId) {
+      return res.status(400).json({ error: "Missing category ID." });
     }
-
     try {
-      await categoryService.deleteCategory(categoryId, email);
+      await categoryService.deleteCategory(categoryId, userId);
       return res.status(200).json({ message: "Category deleted." });
     } catch (error) {
       return res.status(400).json({ error: error.message });

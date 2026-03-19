@@ -9,27 +9,24 @@ export class TaskService {
     status,
     due_date,
     category_id,
-    email
+    userId
   ) {
-    const user = await database.findByEmail(email);
-
+    const user = await database.findById(userId);
     if (!user) {
       throw new Error("User not found to create task.");
     }
-
     await database.createTask(
       title,
       description,
       status,
       due_date,
       category_id,
-      email
+      userId
     );
   }
 
-  async getTasks(email) {
-    const rawTasks = await database.getTasksByUser(email);
-
+  async getTasks(userId) {
+    const rawTasks = await database.getTasksByUser(userId);
     const taskList = rawTasks.map((task) => ({
       id: task.id,
       title: task.title,
@@ -48,11 +45,11 @@ export class TaskService {
     return taskList;
   }
 
-  async updateTask(taskId, email, data) {
-    await database.updateTask(taskId, email, data);
+  async updateTask(taskId, userId, data) {
+    await database.updateTask(taskId, userId, data);
   }
 
-  async deleteTask(taskId, email) {
-    await database.deleteTaskByUser(taskId, email);
+  async deleteTask(taskId, userId) {
+    await database.deleteTaskByUser(taskId, userId);
   }
 }

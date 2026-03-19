@@ -3,19 +3,15 @@ import { DatabasePostg } from "../repositories/database-postg.js";
 import jwt from "jsonwebtoken";
 
 const database = new DatabasePostg();
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export class UserService {
   async registerUser(name, email, password) {
     const userAlreadyExists = await database.findByEmail(email);
-
     if (userAlreadyExists) {
       throw new Error("Email already in use.");
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
     await database.create({
       name,
       email,
@@ -25,20 +21,16 @@ export class UserService {
 
   async loginUser(email, password) {
     const user = await database.findByEmail(email);
-
     if (!user) {
       throw new Error("Invalid email or password. ");
     }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       throw new Error("Invalid email or password.");
     }
     const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, {
       expiresIn: "1d",
     });
-
     return {
       token,
       user: {
@@ -50,57 +42,44 @@ export class UserService {
     };
   }
 
-  async changeAvatar(email, avatar_url) {
-    const user = await database.findByEmail(email);
-
+  async changeAvatar(userId, avatar_url) {
+    const user = await database.findById(userId);
     if (!user) {
-      throw new Error("User not found ");
+      throw new Error("User not found");
     }
-
-    await database.updateAvatar(email, avatar_url);
+    await database.updateAvatar(userId, avatar_url);
   }
 
-  async changePassword(email, oldPassword, newPassword) {
-    const user = await database.findByEmail(email);
-
+  async changePassword(userId, oldPassword, newPassword) {
+    const user = await database.findById(userId);
     if (!user) {
-      throw new Error("invalid user request");
+      throw new Error("Invalid user request");
     }
-
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-
     if (!isPasswordValid) {
       throw new Error("Invalid password");
     }
-
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
-    await database.updatePassword(email, newHashedPassword);
+    await database.updatePassword(userId, newHashedPassword);
   }
 
-  async deleteAccount(email, password) {
-    const user = await database.findByEmail(email);
-
+  async deleteAccount(userId, password) {
+    const user = await database.findById(userId);
     if (!user) {
       throw new Error("Invalid user");
     }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
       throw new Error("Invalid password");
     }
-
-    await database.deleteUser(email);
+    await database.deleteUser(userId);
   }
 
-  async changeUsername(email, newUsername) {
-    const user = await database.findByEmail(email);
-
+  async changeUsername(userId, newUsername) {
+    const user = await database.findById(userId);
     if (!user) {
       throw new Error("Invalid user");
     }
-
-    await database.updateUsername(email, newUsername);
+    await database.updateUsername(userId, newUsername);
   }
-  
 }
