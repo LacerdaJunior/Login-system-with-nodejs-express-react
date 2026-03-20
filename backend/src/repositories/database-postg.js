@@ -22,6 +22,7 @@ export class DatabasePostg {
     try {
       await sql`UPDATE users SET avatar_url = ${avatar_url} WHERE id = ${id}`;
     } catch (error) {
+      console.error("Erro no update do banco:", error);
       throw error;
     }
   }

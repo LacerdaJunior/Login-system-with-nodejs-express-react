@@ -10,7 +10,8 @@ async function createTables() {
         id          TEXT PRIMARY KEY,
         name        VARCHAR(100) NOT NULL,
         email       VARCHAR(150) UNIQUE NOT NULL,
-        password    TEXT NOT NULL
+        password    TEXT NOT NULL,
+        avatar_url  TEXT
       )
     `;
     console.log("Tabela 'users' verificada/criada com sucesso.");
