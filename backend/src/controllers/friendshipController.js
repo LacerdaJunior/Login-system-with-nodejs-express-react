@@ -36,7 +36,30 @@ export class FriendshipController {
     } catch (error) {
       return res
         .status(500)
-        .json({ error: "Erro interno ao buscar convites." }, error);
+        .json({ error: "Erro interno ao buscar convites.", detalhes: error.message} );
+    }
+  }
+
+  async list(req, res) {
+    const user = req.userId;
+    try {
+      const friendList = await friendshipService.getFriendsByUser(user);
+      return res.status(200).json(friendList);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: "Erro interno ao buscar amizades.", detalhes: error.message} );
+    }
+  }
+  async remove(req, res) {
+    const userId = req.userId; 
+    const { friendId } = req.params;
+
+    try {
+      const result = await friendshipService.removeConnection(userId, friendId);
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(500).json({ error: "Erro interno ao desfazer amizade.", detalhes: error.message });
     }
   }
 }

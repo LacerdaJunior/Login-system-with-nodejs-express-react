@@ -49,5 +49,7 @@ routes.get("/dashboard/metrics", ensureAuthenticated, metricsController.index);
 routes.post("/friends/request", ensureAuthenticated, friendshipController.send);
 routes.patch("/friends/accept/:id", ensureAuthenticated, friendshipController.accept);
 routes.get("/friends/pending", ensureAuthenticated, friendshipController.pending);
+routes.get("/friends", ensureAuthenticated, friendshipController.list);
+routes.delete("/friends/:friendId", ensureAuthenticated, friendshipController.remove);
 
 export default routes;

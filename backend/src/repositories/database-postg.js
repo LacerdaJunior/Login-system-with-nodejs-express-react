@@ -264,4 +264,31 @@ export class DatabasePostg {
       throw new Error("Erro ao exibir solicitações de amizade.", error);
     }
   }
+
+  async getFriends(userId) {
+    try {
+      const friends = await sql`SELECT users.id, users.name, users.avatar_url
+       FROM users INNER JOIN
+      friendships ON users.id = friendships.sender_id OR users.id = friendships.receiver_id
+      WHERE (friendships.receiver_id = ${userId} OR friendships.sender_id = ${userId}) AND users.id != ${userId} AND friendships.status = 'ACCEPTED'
+      `;
+
+      return friends;
+    } catch (error) {
+      console.error("Erro ao buscar lista de amigos:", error);
+      throw new Error("Erro ao carregar a sua rede de conexões.");
+    }
+  }
+
+  async removeFriend(userId, friendId) {
+    try {
+      await sql`DELETE FROM friendships WHERE 
+      (sender_id = ${userId} AND receiver_id = ${friendId}) 
+      OR 
+      (sender_id = ${friendId} AND receiver_id = ${userId})`;
+    } catch (error) {
+      console.error("Erro ao desfazer amizade:", error);
+      throw new Error("Erro ao remover usuário da sua rede.");
+    }
+  }
 }

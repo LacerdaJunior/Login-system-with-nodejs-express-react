@@ -22,4 +22,15 @@ export class FriendshipService {
     const requests = await database.getPendingRequests(userId);
     return requests;
   }
+
+  async getFriendsByUser(userId) {
+    const friends = await database.getFriends(userId);
+    return friends;
+  }
+
+  async removeConnection(userId, friendId) {
+    await database.removeFriend(userId, friendId);
+
+    return { message: "Amizade desfeita com sucesso." };
+  }
 }
