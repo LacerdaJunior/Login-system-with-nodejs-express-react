@@ -1,0 +1,26 @@
+name: CI - Pipeline de Testes
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Baixando o código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurando o Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 📦 Instalando as dependências (npm install)
+        run: npm install
+
+      - name: 🧪 Rodando os Testes Unitários do Vitest
+        run: npm test
