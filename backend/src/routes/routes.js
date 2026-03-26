@@ -52,5 +52,7 @@ routes.get("/friends/pending", ensureAuthenticated, friendshipController.pending
 routes.get("/friends", ensureAuthenticated, friendshipController.list);
 routes.delete("/friends/:friendId", ensureAuthenticated, friendshipController.remove);
 routes.get("/users/search", ensureAuthenticated, userController.search);
+//rota verifica username em uso:
+routes.get("/users/check-username", userController.checkUsername);
 
 export default routes;

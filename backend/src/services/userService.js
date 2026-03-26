@@ -6,19 +6,14 @@ const database = new DatabasePostg();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export class UserService {
-  async registerUser(name, email, password, username) {
+  async registerUser(name, email, password, username, avatar_url) {
     const [emailTaken, usernameTaken] = await Promise.all([
-      database.isEmailTaken(email),
+      database.findByEmail(email),
       database.isUsernameTaken(username),
     ]);
 
-    if (emailTaken) {
-      throw new Error("Email already in use.");
-    }
-
-    if (usernameTaken) {
-      throw new Error("Username already in use.");
-    }
+    if (emailTaken) throw new Error("Email already in use.");
+    if (usernameTaken) throw new Error("Username already in use.");
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -27,27 +22,42 @@ export class UserService {
       email,
       password: hashedPassword,
       username,
+      avatar_url,
     });
+  }
+  async isUsernameAvailable(username) {
+    const isTaken = await database.isUsernameTaken(username);
+    return !isTaken;
   }
 
   async loginUser(email, password) {
-    const user = await database.findByEmail(email);
+    const user = await database.getUserByEmail(email);
+
     if (!user) {
-      throw new Error("Invalid email or password. ");
+      throw new Error("Email ou senha incorretos.");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new Error("Invalid email or password.");
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw new Error("Email ou senha incorretos.");
     }
-    const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, {
-      expiresIn: "1d",
-    });
+
+    const token = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET || "sua_chave_secreta",
+      {
+        expiresIn: "1d",
+      }
+    );
+
     return {
       token,
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
+        username: user.username,
         avatar_url: user.avatar_url,
       },
     };

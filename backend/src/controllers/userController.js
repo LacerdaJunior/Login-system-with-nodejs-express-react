@@ -4,7 +4,7 @@ const userService = new UserService();
 
 export class UserController {
   async register(req, res) {
-    const { name, email, password, username } = req.body;
+    const { name, email, password, username, avatar_url } = req.body;
 
     if (!name || !email || !password || !username) {
       return res
@@ -12,7 +12,13 @@ export class UserController {
         .send("Name, email, password and username must be filled!");
     }
     try {
-      await userService.registerUser(name, email, password, username);
+      await userService.registerUser(
+        name,
+        email,
+        password,
+        username,
+        avatar_url || null
+      );
       return res.status(201).send("User created successfully!");
     } catch (error) {
       if (
@@ -21,8 +27,24 @@ export class UserController {
       ) {
         return res.status(409).send(error.message);
       }
-      console.error(error);
       return res.status(500).send("Internal Server Error.");
+    }
+  }
+
+  async checkUsername(req, res) {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).send("Username required");
+    }
+
+    try {
+      const isAvailable = await userService.isUsernameAvailable(username);
+
+      return res.status(200).json({ available: isAvailable });
+    } catch (error) {
+      console.error("Erro no checkUsername:", error);
+      return res.status(500).send("Error checking username");
     }
   }
 

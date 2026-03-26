@@ -8,6 +8,12 @@ export class DatabasePostg {
     `;
     return result.length > 0;
   }
+  async getUserByEmail(email) {
+    const result = await sql`
+      SELECT * FROM users WHERE email = ${email} LIMIT 1
+    `;
+    return result[0] || null;
+  }
 
   async findById(id) {
     const result = await sql`SELECT * FROM users WHERE id = ${id}`;
@@ -32,8 +38,8 @@ export class DatabasePostg {
 
   async create(user) {
     const userId = randomUUID();
-    const { name, email, password, username } = user;
-    await sql`INSERT INTO users (id, name, email, password, username) VALUES (${userId}, ${name}, ${email}, ${password}, ${username})`;
+    const { name, email, password, username, avatar_url } = user; 
+    await sql`INSERT INTO users (id, name, email, password, username, avatar_url) VALUES (${userId}, ${name}, ${email}, ${password}, ${username}, ${avatar_url})`;
   }
 
   async updateAvatar(id, avatar_url) {
@@ -219,8 +225,12 @@ export class DatabasePostg {
 
   async getMetrics(userId) {
     try {
-      const metrics =
-        await sql`SELECT status, COUNT(*) FROM tasks WHERE user_id = ${userId} OR assignet_to ${userId} GROUP BY status`;
+      const metrics = await sql`
+        SELECT status, COUNT(*) 
+        FROM tasks 
+        WHERE user_id = ${userId} OR assigned_to = ${userId} 
+        GROUP BY status
+      `;
       return metrics;
     } catch (error) {
       console.error("Erro ao trazer metricas no banco:", error);
