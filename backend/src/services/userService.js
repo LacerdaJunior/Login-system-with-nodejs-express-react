@@ -6,16 +6,27 @@ const database = new DatabasePostg();
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export class UserService {
-  async registerUser(name, email, password) {
-    const userAlreadyExists = await database.findByEmail(email);
-    if (userAlreadyExists) {
+  async registerUser(name, email, password, username) {
+    const [emailTaken, usernameTaken] = await Promise.all([
+      database.isEmailTaken(email),
+      database.isUsernameTaken(username),
+    ]);
+
+    if (emailTaken) {
       throw new Error("Email already in use.");
     }
+
+    if (usernameTaken) {
+      throw new Error("Username already in use.");
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
     await database.create({
       name,
       email,
       password: hashedPassword,
+      username,
     });
   }
 
@@ -81,5 +92,17 @@ export class UserService {
       throw new Error("Invalid user");
     }
     await database.updateUsername(userId, newUsername);
+  }
+
+  async searchUser(username) {
+    const cleanUsername = username.replace("@", "");
+
+    const user = await database.findByUsername(cleanUsername);
+
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    return user;
   }
 }

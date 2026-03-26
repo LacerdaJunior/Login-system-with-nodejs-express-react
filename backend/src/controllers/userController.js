@@ -4,22 +4,25 @@ const userService = new UserService();
 
 export class UserController {
   async register(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password, username } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).send("Name, email and password must be filled!");
+    if (!name || !email || !password || !username) {
+      return res
+        .status(400)
+        .send("Name, email, password and username must be filled!");
     }
-
     try {
-      await userService.registerUser(name, email, password);
+      await userService.registerUser(name, email, password, username);
       return res.status(201).send("User created successfully!");
     } catch (error) {
-
-   
-      if (error.message === "Email already in use.") {
+      if (
+        error.message === "Email already in use." ||
+        error.message === "Username already in use."
+      ) {
         return res.status(409).send(error.message);
       }
-      return res.status(500).send("Intern Error.");
+      console.error(error);
+      return res.status(500).send("Internal Server Error.");
     }
   }
 
@@ -92,5 +95,22 @@ export class UserController {
     }
   }
 
-  
+  async search(req, res) {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).send("Please provide a username to search.");
+    }
+
+    try {
+      const user = await userService.searchUser(username);
+      return res.status(200).json(user);
+    } catch (error) {
+      if (error.message === "User not found.") {
+        return res.status(404).send(error.message);
+      }
+      console.error(error);
+      return res.status(500).send("Internal Server Error.");
+    }
+  }
 }

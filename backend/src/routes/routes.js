@@ -51,5 +51,6 @@ routes.patch("/friends/accept/:id", ensureAuthenticated, friendshipController.ac
 routes.get("/friends/pending", ensureAuthenticated, friendshipController.pending);
 routes.get("/friends", ensureAuthenticated, friendshipController.list);
 routes.delete("/friends/:friendId", ensureAuthenticated, friendshipController.remove);
+routes.get("/users/search", ensureAuthenticated, userController.search);
 
 export default routes;

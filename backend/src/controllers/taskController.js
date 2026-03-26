@@ -5,10 +5,13 @@ const taskService = new TaskService();
 export class TaskController {
   async create(req, res) {
     const userId = req.userId;
-    const { title, description, status, due_date, category_id } = req.body;
+    const { title, description, status, due_date, category_id, assigned_to } =
+      req.body;
+
     if (!title) {
       return res.status(400).json({ error: "Title is required!" });
     }
+
     try {
       await taskService.createNewTask(
         title,
@@ -16,7 +19,8 @@ export class TaskController {
         status,
         due_date || null,
         category_id || null,
-        userId
+        userId,
+        assigned_to || null 
       );
       return res.status(201).json({ message: "Task created successfully!" });
     } catch (error) {

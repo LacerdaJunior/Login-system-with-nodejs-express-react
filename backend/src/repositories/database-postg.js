@@ -3,19 +3,37 @@ import sql from "../config/db.js";
 
 export class DatabasePostg {
   async findByEmail(email) {
-    const result = await sql`SELECT * FROM users WHERE email = ${email}`;
-    return result[0];
+    const result = await sql`
+      SELECT 1 FROM users WHERE email = ${email} LIMIT 1
+    `;
+    return result.length > 0;
   }
 
   async findById(id) {
     const result = await sql`SELECT * FROM users WHERE id = ${id}`;
     return result[0];
   }
+  async isUsernameTaken(username) {
+    const result = await sql`
+      SELECT 1 FROM users WHERE username = ${username} LIMIT 1
+    `;
+    return result.length > 0;
+  }
+
+  async findByUsername(username) {
+    const result = await sql`
+      SELECT id, name, username, avatar_url 
+      FROM users 
+      WHERE username ILIKE ${username}
+    `;
+
+    return result[0] || null;
+  }
 
   async create(user) {
     const userId = randomUUID();
-    const { name, email, password } = user;
-    await sql`INSERT INTO users (id, name, email, password) VALUES (${userId}, ${name}, ${email}, ${password})`;
+    const { name, email, password, username } = user;
+    await sql`INSERT INTO users (id, name, email, password, username) VALUES (${userId}, ${name}, ${email}, ${password}, ${username})`;
   }
 
   async updateAvatar(id, avatar_url) {
@@ -57,12 +75,20 @@ export class DatabasePostg {
     }
   }
 
-  async createTask(title, description, status, due_date, category_id, user_id) {
+  async createTask(
+    title,
+    description,
+    status,
+    due_date,
+    category_id,
+    user_id,
+    assigned_to
+  ) {
     const taskId = randomUUID();
     try {
       await sql`
-        INSERT INTO tasks (id, title, description, status, due_date, category_id, user_id) 
-        VALUES (${taskId}, ${title}, ${description}, ${status}, ${due_date}, ${category_id}, ${user_id})
+        INSERT INTO tasks (id, title, description, status, due_date, category_id, user_id, assigned_to) 
+        VALUES (${taskId}, ${title}, ${description}, ${status}, ${due_date}, ${category_id}, ${user_id}, ${assigned_to})
       `;
       return true;
     } catch (error) {
@@ -80,12 +106,18 @@ export class DatabasePostg {
           t.status, 
           t.due_date, 
           t.created_at,
+          t.assigned_to, 
           c.id AS category_id, 
           c.name AS category_name, 
-          c.color AS category_color
+          c.color AS category_color,
+          u.id AS assignee_id,
+          u.name AS assignee_name,
+          u.avatar_url AS assignee_avatar 
         FROM tasks t
         LEFT JOIN categories c ON t.category_id = c.id
-        WHERE t.user_id = ${userId}
+        LEFT JOIN users u ON t.assigned_to = u.id
+        WHERE (t.user_id = ${userId} OR t.assigned_to = ${userId})
+        
         ORDER BY t.created_at DESC
       `;
       return tasks;
@@ -289,6 +321,23 @@ export class DatabasePostg {
     } catch (error) {
       console.error("Erro ao desfazer amizade:", error);
       throw new Error("Erro ao remover usuário da sua rede.");
+    }
+  }
+
+  async areFriends(user1Id, user2Id) {
+    try {
+      const result = await sql`
+        SELECT 1 FROM friendships
+        WHERE (
+          (sender_id = ${user1Id} AND receiver_id = ${user2Id})
+          OR 
+          (sender_id = ${user2Id} AND receiver_id = ${user1Id}) 
+        ) AND status = 'ACCEPTED' 
+      `;
+      return result.length > 0;
+    } catch (error) {
+      console.error("Erro ao verificar amizade:", error);
+      throw new Error("Erro ao validar permissões de rede.");
     }
   }
 }
