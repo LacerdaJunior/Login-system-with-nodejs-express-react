@@ -28,6 +28,7 @@ const AVATARES = [
 export function ProfileModal({ onClose }) {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userUsername, setUserUsername] = useState(""); 
   const [avatarUrl, setAvatarUrl] = useState(null);
 
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
@@ -51,6 +52,7 @@ export function ProfileModal({ onClose }) {
       setUserName(user.name);
       setNewName(user.name);
       setUserEmail(user.email);
+      setUserUsername(user.username); 
       if (user.avatar_url) setAvatarUrl(user.avatar_url);
     } else {
       navigate("/login");
@@ -155,7 +157,8 @@ export function ProfileModal({ onClose }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto p-8 rounded-2xl shadow-2xl flex flex-col gap-8 custom-scrollbar"
+          /* Ajuste de responsividade aqui: p-6 em mobile e p-8 em desktop */
+          className="relative bg-white w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 rounded-2xl shadow-2xl flex flex-col gap-6 custom-scrollbar"
         >
           <button
             onClick={onClose}
@@ -167,7 +170,7 @@ export function ProfileModal({ onClose }) {
           <div className="flex flex-col items-center gap-4 mt-4">
             <div className="relative">
               <div
-                className={`w-32 h-32 rounded-full overflow-hidden flex items-center justify-center shadow-md border-4 ${
+                className={`w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden flex items-center justify-center shadow-md border-4 ${
                   avatarUrl ? "border-brand" : "bg-zinc-50 border-zinc-200"
                 }`}
               >
@@ -183,7 +186,7 @@ export function ProfileModal({ onClose }) {
               </div>
               <button
                 onClick={() => setIsEditingAvatar(!isEditingAvatar)}
-                className="absolute bottom-0 right-0 p-3 bg-brand text-white rounded-full shadow-lg hover:opacity-90 transition-opacity border-2 border-white"
+                className="absolute bottom-0 right-0 p-2.5 sm:p-3 bg-brand text-white rounded-full shadow-lg hover:opacity-90 transition-opacity border-2 border-white"
                 title="Trocar Avatar"
               >
                 <Edit2 size={16} />
@@ -214,19 +217,27 @@ export function ProfileModal({ onClose }) {
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-3">
-                  <h1 className="text-2xl font-bold text-zinc-800">
-                    {userName}
-                  </h1>
-                  <button
-                    onClick={() => setIsEditingName(true)}
-                    className="text-zinc-400 hover:text-brand transition-colors"
-                  >
-                    <Edit2 size={18} />
-                  </button>
+                <div className="flex flex-col items-center text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <h1 className="text-2xl font-bold text-zinc-800">
+                      {userName}
+                    </h1>
+                    <button
+                      onClick={() => setIsEditingName(true)}
+                      className="text-zinc-400 hover:text-brand transition-colors"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                  </div>
+                  <p className="text-zinc-500 mt-1 font-medium text-sm">
+                    {userEmail}
+                  </p>
+                  {/* EXIBIÇÃO DO @USERNAME AQUI */}
+                  <p className="text-brand text-sm font-bold mt-0.5">
+                    @{userUsername}
+                  </p>
                 </div>
               )}
-              <p className="text-zinc-500 mt-1">{userEmail}</p>
             </div>
           </div>
 
@@ -238,16 +249,17 @@ export function ProfileModal({ onClose }) {
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
-                  <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider mb-4 text-center">
+                <div className="bg-zinc-50 p-4 sm:p-6 rounded-2xl border border-zinc-100">
+                  <h3 className="text-xs sm:text-sm font-bold text-zinc-500 uppercase tracking-wider mb-4 text-center">
                     Selecione um novo avatar
                   </h3>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {/* SCROLL ADICIONADO AQUI: max-h-[200px] e overflow-y-auto */}
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 max-h-[200px] overflow-y-auto custom-scrollbar p-1">
                     {AVATARES.map((caminho) => (
                       <button
                         key={caminho}
                         onClick={() => handleEscolherAvatar(caminho)}
-                        className={`relative p-2 rounded-xl border-2 transition-all hover:scale-105 h-20 overflow-hidden ${
+                        className={`relative p-2 rounded-xl border-2 transition-all hover:scale-105 h-16 sm:h-20 overflow-hidden ${
                           avatarUrl === caminho
                             ? "border-brand bg-brand/10"
                             : "bg-white border-zinc-200 hover:border-brand/50"
@@ -290,10 +302,10 @@ export function ProfileModal({ onClose }) {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-4 flex flex-col gap-6 p-1">
+                  <div className="mt-4 flex flex-col gap-4 sm:gap-6 p-1">
                     <form
                       onSubmit={handleMudarSenha}
-                      className="bg-white border border-zinc-200 p-5 rounded-xl flex flex-col gap-3"
+                      className="bg-white border border-zinc-200 p-4 sm:p-5 rounded-xl flex flex-col gap-3"
                     >
                       <h4 className="font-bold text-zinc-800 flex items-center gap-2 mb-2">
                         <Lock size={16} className="text-brand" /> Alterar Senha
@@ -341,12 +353,12 @@ export function ProfileModal({ onClose }) {
 
                     <form
                       onSubmit={handleExcluirConta}
-                      className="bg-red-50 border border-red-200 p-5 rounded-xl flex flex-col gap-3"
+                      className="bg-red-50 border border-red-200 p-4 sm:p-5 rounded-xl flex flex-col gap-3"
                     >
                       <h4 className="font-bold text-red-600 flex items-center gap-2 mb-2">
                         <Trash2 size={16} /> Excluir conta
                       </h4>
-                      <p className="text-sm text-red-600/80 mb-2 font-space">
+                      <p className="text-xs sm:text-sm text-red-600/80 mb-2 font-space">
                         Para excluir sua conta permanentemente, digite sua senha
                         atual para confirmar.
                       </p>
