@@ -1,7 +1,7 @@
 // src/pages/Home.jsx
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/FooterTemp";
 
 export function Home() {
   return (

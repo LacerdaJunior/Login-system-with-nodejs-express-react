@@ -1,5 +1,5 @@
 import { AnchorHome } from "../components/AnchorHome.jsx";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/FooterTemp.jsx";
 import { TaskBoard } from "../components/TaskBoard.jsx";
 
 export function Dashboard() {

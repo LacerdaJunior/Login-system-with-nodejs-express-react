@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Flame } from "lucide-react";
-import { Footer } from "../components/Footer";
+import { Footer } from "../components/FooterTemp";
 import { BackHome } from "../components/BackHome";
 import { api } from "../services/api";
 import { useEffect } from "react";
