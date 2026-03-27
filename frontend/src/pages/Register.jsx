@@ -11,7 +11,7 @@ import {
   ArrowRight,
   ArrowLeft,
 } from "lucide-react";
-import { Footer } from "../components/FooterTemp";
+import { Footer } from "../components/Footer";
 import { BackHome } from "../components/BackHome";
 import { api } from "../services/api";
 import toast from "react-hot-toast";
