@@ -1,95 +1,85 @@
-````markdown
-# 🚀 [TaskSystem]
+# 🚀 TaskSystem - Gerenciamento Colaborativo de Tarefas
 
-Uma plataforma web colaborativa para gerenciamento de tarefas
- e eventos entre amigos, com sistema de perfis customizáveis.
+O **TaskSystem** é uma plataforma SaaS Full Stack projetada para organizar fluxos de trabalho colaborativos. Mais do que um simples To-Do List, o sistema oferece um ambiente onde usuários podem construir redes de amigos, delegar tarefas com controle de permissões e acompanhar a produtividade através de métricas automatizadas em tempo real.
 
-## 💡 Sobre o Projeto
-
-Iniciado como um sistema robusto de autenticação,
-este projeto está evoluindo para um SaaS (Software as a Service) colaborativo.
-O objetivo é permitir que usuários criem contas de forma segura,
-personalizem seus avatares e gerenciem projetos em equipe com comunicação em tempo real.
-
-## 🛠️ Tecnologias Utilizadas
-
-**Frontend:**
-
-- React (com Vite)
-- Tailwind CSS (Estilização)
-- Framer Motion (Animações de interface)
-- React Router DOM (Navegação)
-- Lucide React (Ícones)
-
-**Backend:**
-
-- Node.js com Express
-- PostgreSQL hospedado no Neon DB (Banco de dados relacional na nuvem)
-- Bcrypt (Criptografia de senhas)
-
-## ⚙️ Funcionalidades Atuais
-
-- [x] Criação de conta e Autenticação de usuários.
-- [x] Criptografia de senhas com padrão de mercado (Bcrypt).
-- [x] Painel de perfil com seleção e atualização de avatar.
-- [x] Proteção de rotas no Frontend (Route Guards).
-- [x] Separação de responsabilidades no Backend (Controllers/Services).
-
-## 🗺️ Roadmap (Próximos Passos)
-
-- [ ] **Sistema de Amizades:** Tabelas relacionais (Many-to-Many) para envio e aceite de convites.
-- [ ] **Tasks Compartilhadas:** Criação de eventos e tarefas atribuídas a múltiplos usuários.
-- [ ] **Chat em Tempo Real:** Integração com WebSockets (`Socket.io`) para comunicação instantânea.
-- [ ] **Deploy e Infraestrutura:** Containerização da aplicação com **Docker** e hospedagem na **AWS** para garantir alta disponibilidade.
-
-## 🚀 Como executar o projeto localmente
-
-> **Nota:** Estas instruções são destinadas a desenvolvedores ou recrutadores que desejam clonar e testar a aplicação em ambiente de desenvolvimento local.
-
-### Pré-requisitos
-
-- Node.js instalado
-- Git instalado
-- Uma conta no [Neon](https://neon.tech/) (para o banco de dados PostgreSQL)
-
-### Passo a Passo
-
-1. Clone este repositório:
-
-```bash
-git clone https://github.com/LacerdaJunior/Login-system-with-nodejs-express-react.git
-```
-````
-
-2. Instale as dependências (execute o comando abaixo em ambas as pastas, frontend e backend):
-
-```bash
-npm install
-
-```
-
-3. Configuração do Banco de Dados e Variáveis de Ambiente:
-
-- Crie um arquivo `.env` na raiz da pasta do backend.
-- Adicione a sua string de conexão do PostgreSQL e a porta do servidor:
-
-```env
-DATABASE_URL="sua_string_de_conexao_do_neon_aqui"
-PORT=3333
-
-```
-
-4. Inicie os servidores:
-
-```bash
-# Na pasta do backend
-npm run dev
-
-# Na pasta do frontend
-npm run dev
-
-```
+🔗 **Acesse o projeto online:** [tasksystem-web.vercel.app](https://tasksystem-web.vercel.app)
 
 ---
 
-_Desenvolvido com foco em boas práticas de Engenharia de Software e Arquitetura Web._
+## 📸 Screenshots
+
+<div align="center">
+  <img src="https://github.com/LacerdaJunior/tasksystem-fullstack/blob/main/frontend/src/assets/readme/1.png" alt="Home Page" width="400">
+  <img src="https://github.com/LacerdaJunior/tasksystem-fullstack/blob/main/frontend/src/assets/readme/2.png" alt="Kanban Board" width="400">
+  <br>
+  <img src="https://github.com/LacerdaJunior/tasksystem-fullstack/blob/main/frontend/src/assets/readme/3.png" alt="Dashboard Métricas" width="400">
+  <img src="https://github.com/LacerdaJunior/tasksystem-fullstack/blob/main/frontend/src/assets/readme/4ok.png" alt="Edit Modal" width="400">
+</div>
+
+---
+
+## ✨ Funcionalidades de Alto Nível
+
+### 🛡️ Controle de Acesso e Permissões (RBAC)
+O sistema implementa uma regra de negócio rigorosa: apenas o **Dono** da tarefa pode editar título, descrição e reatribuir o responsável. O **Convidado** possui visão privilegiada de execução, podendo interagir apenas com o checklist de progresso.
+
+### 👤 Gestão de Identidade
+- Fluxo de autenticação completo com **JWT** e criptografia **Bcrypt**.
+- Identidade única através de sistema de **@username** exclusivo.
+- Personalização de perfis com avatares dinâmicos.
+
+### 🤝 Networking e Colaboração
+- Sistema de amizades com envio e aceite de convites.
+- Delegação dinâmica de tarefas para membros da sua rede.
+
+### 📊 Dashboard e UX
+- Quadro Kanban interativo para gestão de status.
+- Gráficos de produtividade baseados no status global das tarefas e progresso dos checklists.
+- Interface 100% responsiva otimizada para Desktop e Mobile.
+
+---
+
+## 🛠️ Stack Tecnológica
+
+| Camada | Tecnologias |
+| :--- | :--- |
+| **Frontend** | React.js, Vite, Tailwind CSS, Framer Motion, Lucide Icons |
+| **Backend** | Node.js, Express, PostgreSQL |
+| **Infra** | Neon DB (Database), Vercel (Frontend), Render (API) |
+| **Segurança** | JSON Web Tokens (JWT), Bcrypt, Middlewares de Autenticação |
+
+---
+
+## 🚀 Como executar o projeto localmente
+
+### Pré-requisitos
+- Node.js instalado
+- Uma instância de PostgreSQL (ou conta no [Neon.tech](https://neon.tech))
+
+### Passo a Passo
+
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/LacerdaJunior/Login-system-with-nodejs-express-react.git](https://github.com/LacerdaJunior/Login-system-with-nodejs-express-react.git)
+Configure o Backend:
+
+Bash
+cd backend
+npm install
+# Crie um arquivo .env com DATABASE_URL, PORT e JWT_SECRET
+npm run dev
+Configure o Frontend:
+
+Bash
+cd ../frontend
+npm install
+# Crie um arquivo .env.local com VITE_API_URL=http://localhost:3333
+npm run dev
+🗺️ Roadmap de Evolução (V2.0)
+[ ] WebSockets: Implementação de Socket.io para atualizações em tempo real.
+
+[ ] Docker: Containerização completa do ambiente de desenvolvimento.
+
+[ ] Testes: Cobertura de testes unitários com Jest e testes E2E com Cypress.
+
+Desenvolvido com foco em Engenharia de Software por Guilherme Lacerda.
